@@ -213,7 +213,11 @@ var pjax = $.pjax = function( options ) {
     }
 
     if (container.title) document.title = container.title
-    context.html(container.contents)
+    if (options.insertFunction) {
+      options.insertFunction(container.contents, context);
+    } else {
+      context.html(container.contents)
+    }
 
     if ( options.replace ) {
       window.history.replaceState(pjax.state, container.title, container.url)
