@@ -209,12 +209,14 @@ var pjax = $.pjax = function( options ) {
       url: container.url,
       container: context.selector,
       fragment: options.fragment,
-      timeout: options.timeout
+      timeout: options.timeout,
+      insertFunction: options.insertFunction ? options.insertFunction.toString() : null
     }
 
     if (container.title) document.title = container.title
-    if (options.insertFunction) {
-      options.insertFunction(container.contents, context);
+    if (pjax.state.insertFunction) {
+      eval('pjax.insertFunction = ' + pjax.state.insertFunction);
+      pjax.insertFunction(container.contents, context);
     } else {
       context.html(container.contents)
     }
@@ -252,7 +254,8 @@ var pjax = $.pjax = function( options ) {
       url: window.location.href,
       container: context.selector,
       fragment: options.fragment,
-      timeout: options.timeout
+      timeout: options.timeout,
+      insertFunction: options.insertFunction ? options.insertFunction.toString() : null
     }
     window.history.replaceState(pjax.state, document.title)
   }
@@ -484,7 +487,8 @@ $(window).bind('popstate', function(event){
         container: container,
         push: false,
         fragment: state.fragment,
-        timeout: state.timeout
+        timeout: state.timeout,
+        insertFunction: state.insertFunction
       })
     } else {
       window.location = location.href
